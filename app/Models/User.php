@@ -42,7 +42,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
+    
     /**
      * Relación uno a muchos: Un usuario (administrador) puede crear muchos cursos.
      *
@@ -66,4 +66,5 @@ class User extends Authenticatable
                     ->withTimestamps();
                     
     }
+    
 }
