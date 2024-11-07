@@ -9,7 +9,18 @@ class Course extends Model
 {
     use HasFactory;
 
-    // ...
+    /**
+     * Los atributos que son asignables en masa.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'title',
+        'description',
+        'age_group',
+        'category_id',
+        'created_by',
+    ];
 
     /**
      * Relación muchos a muchos: Un curso tiene muchos usuarios inscritos.
@@ -22,6 +33,12 @@ class Course extends Model
         return $this->belongsToMany(User::class, 'inscriptions')
                     ->withPivot('progress', 'current_video_id')
                     ->withTimestamps();
+    }
+
+    public function videos()
+    {
+        return $this->hasMany(Video::class, 'course_id');
+
     }
 
 }

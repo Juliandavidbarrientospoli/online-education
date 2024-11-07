@@ -39,7 +39,7 @@ class Video extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
-    }
+    } 
 
     /**
      * Relación uno a muchos: Un video puede tener muchos comentarios.
