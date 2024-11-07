@@ -13,35 +13,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
-    /**
-     * Los atributos que son asignables en masa.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
-
-    /**
-     * Los atributos que deben ser ocultados para arrays.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * Los atributos que deben ser convertidos a tipos nativos.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    // ...
 
     /**
      * Relación uno a muchos: Un usuario (administrador) puede crear muchos cursos.
@@ -55,31 +27,14 @@ class User extends Authenticatable
 
     /**
      * Relación muchos a muchos: Un usuario puede estar inscrito en muchos cursos.
+     * Gestionado a través de la tabla intermedia 'inscriptions'.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function coursesEnrolled()
     {
-        return $this->belongsToMany(Course::class, 'enrollments')->withPivot('progress', 'current_video_id')->withTimestamps();
-    }
-
-    /**
-     * Relación uno a muchos: Un usuario puede tener muchos comentarios.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
-    }
-
-    /**
-     * Relación uno a muchos: Un usuario puede dar muchos likes.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function likes()
-    {
-        return $this->hasMany(Like::class);
+        return $this->belongsToMany(Course::class, 'inscriptions')
+                    ->withPivot('progress', 'current_video_id')
+                    ->withTimestamps();
     }
 }
