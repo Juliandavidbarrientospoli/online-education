@@ -9,11 +9,6 @@ class Course extends Model
 {
     use HasFactory;
 
-    /**
-     * Los atributos que son asignables en masa.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'title',
         'description',
@@ -22,28 +17,35 @@ class Course extends Model
         'created_by',
     ];
 
-    /**
-     * Relación muchos a muchos: Un curso tiene muchos usuarios inscritos.
-     * Gestionado a través de la tabla intermedia 'inscriptions'.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
+    // Relación con usuarios inscritos
     public function usersEnrolled()
     {
         return $this->belongsToMany(User::class, 'inscriptions')
-                    ->withPivot('progress', 'current_video_id')
-                    ->withTimestamps();
+            ->withPivot('progress', 'current_video_id')
+            ->withTimestamps();
     }
 
+    // Relación con videos
     public function videos()
     {
         return $this->hasMany(Video::class, 'course_id');
-
     }
 
+    // Relación con categoría
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
+    // Acceso a comentarios a través de los videos del curso
+    public function comments()
+    {
+        return $this->hasManyThrough(Comment::class, Video::class, 'course_id', 'video_id');
+    }
+
+    // Acceso a likes a través de los videos del curso
+    public function likes()
+    {
+        return $this->hasManyThrough(Like::class, Video::class, 'course_id', 'video_id');
+    }
 }

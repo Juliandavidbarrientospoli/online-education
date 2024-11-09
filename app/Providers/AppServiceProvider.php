@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Http\Livewire\CourseIndex;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
+use App\Http\Livewire\Admin\CourseCreate;
+use App\Http\Livewire\CourseDetails;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,8 +21,9 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot()
     {
-        //
+        Livewire::component('course-index', CourseIndex::class);
+        Livewire::component('course-details', CourseDetails::class);
     }
 }
