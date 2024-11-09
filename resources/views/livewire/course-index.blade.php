@@ -30,13 +30,6 @@
                     <input id="search" type="text" wire:model.live="searchTerm" class="flex-1 border border-gray-300 rounded-lg shadow-sm form-input focus:ring-indigo-500 focus:border-indigo-500" placeholder="Buscar por título o descripción">
                 </div>
             </div>
-
-            <!-- Botón Crear Curso -->
-            <div class="mt-4 md:mt-0 md:ml-auto">
-                <a href="{{ route('courses.create') }}" class="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">
-                    Crear Curso
-                </a>
-            </div>
         </div>
     </div>
 
