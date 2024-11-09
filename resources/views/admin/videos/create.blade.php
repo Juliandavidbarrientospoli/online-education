@@ -34,9 +34,21 @@
 
         <!-- URL o archivo de video -->
         <div class="mb-4">
-            <label for="video_url" class="block text-sm font-medium text-gray-700">URL del Video</label>
-            <input type="url" name="video_url" id="video_url" class="block w-full p-2 mt-1 border border-gray-300 rounded" placeholder="Ingrese la URL del video" value="{{ old('video_url') }}">
-            @error('video_url') <span class="text-red-500">{{ $message }}</span> @enderror
+            <label for="url" class="block text-sm font-medium text-gray-700">URL del Video</label>
+            <input type="url" name="url" id="url" class="block w-full p-2 mt-1 border border-gray-300 rounded" placeholder="Ingrese la URL del video" value="{{ old('url') }}">
+            @error('url') <span class="text-red-500">{{ $message }}</span> @enderror
+        </div>
+
+        <!-- Selección de categoría -->
+        <div class="mb-4">
+            <label for="category_id" class="block text-sm font-medium text-gray-700">Seleccionar Categoría</label>
+            <select name="category_id" id="category_id" class="block w-full p-2 mt-1 border border-gray-300 rounded">
+                <option value="">Seleccione una categoría</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                @endforeach
+            </select>
+            @error('category_id') <span class="text-red-500">{{ $message }}</span> @enderror
         </div>
 
         <!-- Botón de enviar -->
@@ -44,5 +56,6 @@
             <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">Agregar Video</button>
         </div>
     </form>
+
 </div>
 @endsection

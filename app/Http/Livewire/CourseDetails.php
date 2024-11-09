@@ -35,6 +35,31 @@ class CourseDetails extends Component
         $this->mount($this->course->id); // Recargar comentarios
     }
 
+
+    public function getYouTubeIdFromUrl($url)
+    {
+        // Verifica si la URL es válida
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            return null; // Si no es una URL válida, devuelve null
+        }
+
+        // Extrae los componentes de la URL
+        $parsedUrl = parse_url($url);
+
+        // Verifica si la URL proviene de YouTube
+        if (isset($parsedUrl['host']) && strpos($parsedUrl['host'], 'youtube.com') !== false) {
+            // Extrae el parámetro 'v' (ID del video) de la URL
+            parse_str($parsedUrl['query'], $queryParams);
+
+            // Devuelve el ID del video si existe
+            return isset($queryParams['v']) ? $queryParams['v'] : null;
+        }
+
+        // Si no es una URL de YouTube, devuelve null
+        return null;
+    }
+
+
     public function toggleLike($videoId)
     {
         $like = Like::where('video_id', $videoId)->where('user_id', Auth::id())->first();

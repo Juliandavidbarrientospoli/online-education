@@ -39,10 +39,13 @@ Route::get('/admin/inscriptions', [InscriptionController::class, 'index'])->name
 Route::post('/courses/{course}/inscription', [InscriptionController::class, 'store'])->name('courses.inscription');
 Route::get('/courses/{courseId}/details', CourseDetails::class)->name('courses.details');
 Route::post('/videos', [VideoController::class, 'store'])->name('videos.store');
+Route::post('/admin/videos/create', [VideoController::class, 'store'])->name('videos.store');
+
 
 Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
 Route::get('/admin/courses/create', [CourseController::class, 'create'])->name('courses.create');
 Route::get('/admin/videos/create', [VideoController::class, 'create'])->name('videos.create');
+
 
 Route::get('/admin/panel', [AdminController::class, 'index'])->name('admin.panel');
 

@@ -5,13 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Video;
 use App\Models\Course;
+use App\Models\Category;
+
 
 class VideoController extends Controller
 {
     public function create()
     {
         $courses = Course::all();
-        return view('admin.videos.create', compact('courses'));
+        $categories = Category::all();  // Cargar las categorías
+
+        return view('admin.videos.create', compact('courses', 'categories'));
     }
 
     public function store(Request $request)

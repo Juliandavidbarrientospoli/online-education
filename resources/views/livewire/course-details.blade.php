@@ -8,16 +8,26 @@
         <div class="p-4 mt-6 bg-gray-100 rounded-lg shadow-lg">
             <h2 class="text-2xl font-semibold text-gray-800">{{ $video->title }}</h2>
 
-            <!-- Video ajustado a un tamaño más grande, adecuado para plataforma de cursos -->
-            <div class="flex justify-center mt-4">
-                <video src="{{ asset('storage/' . $video->url) }}" controls class="h-56 rounded-lg shadow-md w-80 md:w-96 md:h-72 lg:w-108 lg:h-80"></video>
-            </div>
+            <!-- Verifica si la URL es de YouTube y muestra el video correctamente -->
+            @php
+                $youtubeId = $this->getYouTubeIdFromUrl($video->url); // Llamada al método para obtener el ID de YouTube
+            @endphp
+
+            @if ($youtubeId)
+                <!-- Video de YouTube embebido con iframe (ajustado para ser más grande) -->
+                <div class="flex justify-center mt-4">
+                    <iframe width="100%" height="auto" src="https://www.youtube.com/embed/{{ $youtubeId }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full rounded-lg shadow-md lg:w-3/4 h-96"></iframe>
+                </div>
+            @else
+                <!-- Video local o de otro tipo (ajustado para ser más grande) -->
+                <div class="flex justify-center mt-4">
+                    <video src="{{ asset('storage/' . $video->url) }}" controls class="w-full rounded-lg shadow-md lg:w-3/4 h-96"></video>
+                </div>
+            @endif
 
             <!-- Sección de comentarios -->
             <div class="mt-4">
                 <h3 class="text-lg font-semibold text-gray-700">Comentarios</h3>
-
-                <!-- Lista de comentarios -->
                 <div class="space-y-3">
                     @foreach ($video->comments as $comment)
                         <div class="p-3 bg-white rounded-lg shadow-sm">
