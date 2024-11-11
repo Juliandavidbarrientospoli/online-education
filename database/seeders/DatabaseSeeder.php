@@ -27,108 +27,154 @@ class DatabaseSeeder extends Seeder
         ]);
         $admin->assignRole($adminRole);
 
-        $user1 = User::firstOrCreate(['email' => 'user1@example.com'], [
-            'name' => 'Regular User One',
-            'password' => Hash::make('password'),
-        ]);
-        $user1->assignRole($userRole);
-
-        $user2 = User::firstOrCreate(['email' => 'user2@example.com'], [
-            'name' => 'Regular User Two',
-            'password' => Hash::make('password'),
-        ]);
-        $user2->assignRole($userRole);
+        // Crear usuarios ficticios con nombres reales
+        $userNames = ['Juan Perez', 'Ana García', 'Luis Ramírez', 'María López', 'Carlos Fernández', 'Elena Martínez', 'Pedro González', 'Lucía Rodríguez', 'Sofía Sánchez'];
+        foreach ($userNames as $index => $name) {
+            $user = User::firstOrCreate(['email' => "user{$index}@example.com"], [
+                'name' => $name,
+                'password' => Hash::make('password'),
+            ]);
+            $user->assignRole($userRole);
+        }
 
         // 3. Crear categorías
-        $mathCategory = Category::firstOrCreate(['name' => 'Matemáticas']);
-        $scienceCategory = Category::firstOrCreate(['name' => 'Ciencias']);
-        $historyCategory = Category::firstOrCreate(['name' => 'Historia']);
-        $literatureCategory = Category::firstOrCreate(['name' => 'Literatura']);
+        $categories = [
+            'Matemáticas',
+            'Ciencias',
+            'Física',
+            'Informática',
+            'Literatura'
+        ];
+
+        foreach ($categories as $categoryName) {
+            $categoryInstances[$categoryName] = Category::firstOrCreate(['name' => $categoryName]);
+        }
 
         // 4. Crear cursos
-        $course1 = Course::firstOrCreate(['title' => 'Curso de Matemáticas Básicas'], [
-            'description' => 'Aprende los conceptos básicos de las matemáticas.',
-            'age_group' => '5-8',
-            'category_id' => $mathCategory->id,
-            'image_url' => 'curso-matematicas.jpg',
-            'created_by' => $admin->id,
-        ]);
+        $courses = [
+            [
+                'title' => 'Curso de Matemáticas Básicas',
+                'description' => 'Aprende los conceptos básicos de las matemáticas.',
+                'age_group' => '5-8',
+                'category' => 'Matemáticas',
+                'image_url' => 'courses/Ll5q3YJD2ATRzDqIsoazEPNgJ3f6FPdqAENSLVlh.jpg',
+            ],
+            [
+                'title' => 'Curso de Ciencias Naturales',
+                'description' => 'Introducción a las ciencias naturales.',
+                'age_group' => '9-13',
+                'category' => 'Ciencias',
+                'image_url' => 'courses/QyTeIvKJ1zVhQmckrXnUUGEDjEDbpDfjqZ8P0pxO.jpg',
+            ],
+            [
+                'title' => 'Física Avanzada',
+                'description' => 'Explora los principios avanzados de la física.',
+                'age_group' => '16+',
+                'category' => 'Física',
+                'image_url' => 'courses/BCb3ou7v3NYDbdv6qOVg6WBYvqzYtD9lqJX7viRm.jpg',
+            ],
+            [
+                'title' => 'Introducción a la Informática',
+                'description' => 'Conceptos básicos de la informática y tecnología.',
+                'age_group' => '14-16',
+                'category' => 'Informática',
+                'image_url' => 'courses/dnII67D8OM8FRkjM2Na2ZkSsmMw7NF5mTCpNAmSV.jpg',
+            ],
+            [
+                'title' => 'Historia de la Literatura',
+                'description' => 'Descubre los clásicos de la literatura mundial.',
+                'age_group' => '16+',
+                'category' => 'Literatura',
+                'image_url' => 'courses/Gp6GZD4nFcAYoa1UNGZ03wsInH8YBVgFyze895uk.jpg',
+            ]
+        ];
 
-        $course2 = Course::firstOrCreate(['title' => 'Física Básica'], [
-            'description' => 'Explora los principios de la física.',
-            'age_group' => '9-13',
-            'category_id' => $scienceCategory->id,
-            'image_url' => 'curso-fisica-basica.jpg',
-            'created_by' => $admin->id,
-        ]);
+        foreach ($courses as $courseData) {
+            $courseInstances[$courseData['title']] = Course::firstOrCreate(['title' => $courseData['title']], [
+                'description' => $courseData['description'],
+                'age_group' => $courseData['age_group'],
+                'category_id' => $categoryInstances[$courseData['category']]->id,
+                'image_url' => $courseData['image_url'],
+                'created_by' => $admin->id,
+            ]);
+        }
 
-        $course3 = Course::firstOrCreate(['title' => 'Física Avanzada'], [
-            'description' => 'Aprende los conceptos avanzados de la física.',
-            'age_group' => '16+',
-            'category_id' => $scienceCategory->id,
-            'image_url' => 'curso-fisica-avanzada.jpg',
-            'created_by' => $admin->id,
-        ]);
+        // 5. Define los datos de los videos y asigna a todos los cursos
+        $videos = [
+            'Curso de Matemáticas Básicas' => [
+                ['title' => 'Introducción a las Matemáticas', 'url' => 'https://www.youtube.com/watch?v=FKkDGow6Fpw'],
+                ['title' => 'Números con Signo', 'url' => 'https://www.youtube.com/watch?v=P61RkhoDM6A'],
+                ['title' => 'Fracciones', 'url' => 'https://www.youtube.com/watch?v=dOBYHkWni9s'],
+                ['title' => 'Signos de Agrupación', 'url' => 'https://www.youtube.com/watch?v=Fs3wd8Mt_w4'],
+                ['title' => 'Exponentes', 'url' => 'https://www.youtube.com/watch?v=3zsqtpYsq-A']
+            ],
+            'Curso de Ciencias Naturales' => [
+                ['title' => 'Introducción a las Ciencias Naturales', 'url' => 'https://www.youtube.com/watch?v=1a8pI65emDE'],
+                ['title' => 'El Ciclo del Agua', 'url' => 'https://www.youtube.com/watch?v=ZzY5-NZSzVw'],
+                ['title' => 'La Célula y sus Funciones', 'url' => 'https://www.youtube.com/watch?v=URUJD5NEXC8']
+            ],
+            'Física Avanzada' => [
+                ['title' => 'Mecánica Cuántica: Principios Básicos', 'url' => 'https://www.youtube.com/watch?v=ScXf8gk5IM4'],
+                ['title' => 'Relatividad General: Una Introducción', 'url' => 'https://www.youtube.com/watch?v=4yyb_RNJWUM'],
+                ['title' => 'Física de Partículas: El Modelo Estándar', 'url' => 'https://www.youtube.com/watch?v=Rkhb8zN4uYc']
+            ],
+            'Introducción a la Informática' => [
+                ['title' => 'Conceptos Básicos de Informática', 'url' => 'https://www.youtube.com/watch?v=info-basics'],
+                ['title' => 'Historia de las Computadoras', 'url' => 'https://www.youtube.com/watch?v=comp-history'],
+                ['title' => 'Fundamentos de Programación', 'url' => 'https://www.youtube.com/watch?v=program-fundamentals']
+            ],
+            'Historia de la Literatura' => [
+                ['title' => 'Nuevos Autores del Siglo XXI', 'url' => 'https://www.youtube.com/watch?v=xxabcde1234'],
+                ['title' => 'Movimientos Literarios Recientes', 'url' => 'https://www.youtube.com/watch?v=xxxyzxyz5678'],
+                ['title' => 'La Evolución de la Novela Moderna', 'url' => 'https://www.youtube.com/watch?v=xxqrstuv9012']
+            ]
+        ];
 
-        $course4 = Course::firstOrCreate(['title' => 'Matemáticas Avanzadas'], [
-            'description' => 'Explora los principios avanzados de las matemáticas.',
-            'age_group' => '9-13',
-            'category_id' => $mathCategory->id,
-            'image_url' => 'curso-matematicas-avanzada.jpg',
-            'created_by' => $admin->id,
-        ]);
+        foreach ($videos as $courseTitle => $courseVideos) {
+            $course = Course::where('title', $courseTitle)->first();
+            if ($course) {
+                foreach ($courseVideos as $videoData) {
+                    Video::firstOrCreate([
+                        'title' => $videoData['title'],
+                        'url' => $videoData['url'],
+                        'course_id' => $course->id,
+                        'category_id' => $course->category_id,
+                    ]);
+                }
+            }
+        }
 
-        // 5. Crear videos
-        $video1 = Video::firstOrCreate(['course_id' => $course1->id, 'title' => 'Introducción a las Matemáticas'], [
-            'url' => 'https://www.youtube.com/watch?v=XXXXXXX',
-            'category_id' => $mathCategory->id,
-        ]);
+        // 6. Crear inscripciones y progreso para usuarios
+        foreach (User::all()->where('email', '!=', 'admin@example.com') as $user) {
+            foreach ($courseInstances as $course) {
+                $video = Video::where('course_id', $course->id)->inRandomOrder()->first();
 
-        $video2 = Video::firstOrCreate(['course_id' => $course2->id, 'title' => 'Ley de Newton'], [
-            'url' => 'https://www.youtube.com/watch?v=YYYYYYY',
-            'category_id' => $scienceCategory->id,
-        ]);
+                Inscription::firstOrCreate([
+                    'course_id' => $course->id,
+                    'user_id' => $user->id
+                ], [
+                    'progress' => rand(10, 100),
+                    'current_video_id' => $video ? $video->id : null, // Si no hay video, asigna null
+                ]);
+            }
+        }
 
-        $video3 = Video::firstOrCreate(['course_id' => $course3->id, 'title' => 'Teoría de la Relatividad'], [
-            'url' => 'https://www.youtube.com/watch?v=ZZZZZZZ',
-            'category_id' => $scienceCategory->id,
-        ]);
+        // 7. Crear comentarios para cada video por diferentes usuarios con nombres y comentarios realistas
+        $comments = [
+            'Increíble introducción, me ha encantado la claridad del contenido.',
+            'Este tema es fascinante. ¡Gracias por compartirlo!',
+            'El curso está muy bien estructurado. Me ayudó a comprender mejor los conceptos.',
+            'Excelente contenido. El profesor explica muy bien cada punto.',
+            'Me gustaría ver más ejemplos prácticos en los próximos módulos.'
+        ];
 
-        $video4 = Video::firstOrCreate(['course_id' => $course4->id, 'title' => 'Cálculo Diferencial'], [
-            'url' => 'https://www.youtube.com/watch?v=WWWWWWW',
-            'category_id' => $mathCategory->id,
-        ]);
-
-        // 6. Crear inscripciones
-        Inscription::firstOrCreate(['course_id' => $course1->id, 'user_id' => $user1->id], [
-            'progress' => 50,
-            'current_video_id' => $video1->id,
-        ]);
-
-        Inscription::firstOrCreate(['course_id' => $course2->id, 'user_id' => $user2->id], [
-            'progress' => 30,
-            'current_video_id' => $video2->id,
-        ]);
-
-        // 7. Crear comentarios para cada video
-        Comment::firstOrCreate(['video_id' => $video1->id, 'user_id' => $user1->id], [
-            'content' => 'Este curso de matemáticas es excelente para principiantes.',
-            'approved' => true,
-        ]);
-
-        Comment::firstOrCreate(['video_id' => $video2->id, 'user_id' => $user2->id], [
-            'content' => 'Me gustó mucho la explicación de las leyes de Newton.',
-            'approved' => true,
-        ]);
-
-        Comment::firstOrCreate(['video_id' => $video3->id, 'user_id' => $user1->id], [
-            'content' => 'Muy interesante el tema de la relatividad.',
-            'approved' => true,
-        ]);
-
-        Comment::firstOrCreate(['video_id' => $video4->id, 'user_id' => $user2->id], [
-            'content' => 'El curso de cálculo diferencial es muy completo.',
-            'approved' => true,
-        ]);
+        foreach (Video::all() as $video) {
+            foreach (User::all()->where('email', '!=', 'admin@example.com')->random(5) as $user) {
+                Comment::firstOrCreate(['video_id' => $video->id, 'user_id' => $user->id], [
+                    'content' => $comments[array_rand($comments)],
+                    'approved' => true,
+                ]);
+            }
+        }
     }
 }

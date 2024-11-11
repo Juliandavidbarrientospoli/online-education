@@ -1,4 +1,4 @@
-<div class="container px-4 mx-auto my-8">
+<div class="container px-4 mx-auto my-8" wire:poll.10s>
     <div class="mb-6">
         <div class="flex flex-wrap items-center gap-4">
             <!-- Filtro de categoría -->
@@ -37,7 +37,8 @@
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
         @forelse ($courses as $course)
             <div class="overflow-hidden transition-all duration-300 transform bg-white rounded-lg shadow-lg hover:shadow-2xl hover:scale-105">
-                <img src="{{ asset('storage/' . $course->image_url ?? '/api/placeholder/400/300') }}" alt="Imagen del curso" class="object-cover w-full h-32">
+                <img src="{{ asset('storage/' . $course->image_url) }}" alt="Imagen del curso" class="object-cover w-full h-56 rounded-lg">
+
                 <div class="p-4">
                     <h3 class="mb-2 text-lg font-semibold text-gray-900">{{ $course->title }}</h3>
                     <p class="mb-4 text-sm text-gray-700 truncate">{{ $course->description }}</p>

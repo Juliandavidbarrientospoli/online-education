@@ -12,28 +12,30 @@ class CourseDetails extends Component
 {
     public $course;
     public $newComment;
-    public $courseId;
+    public $completedVideos = [];
 
     public function mount($courseId)
     {
-        $this->courseId = $courseId;
-        $this->loadCourseData(); // Cargar datos al montar
+        $this->loadCourseData($courseId);
     }
 
-    public function loadCourseData()
+    public function loadCourseData($courseId)
     {
-        $this->course = Course::with(['videos.comments.user', 'videos.likes'])->find($this->courseId);
+        $this->course = Course::with([
+            'videos.comments.user',
+            'videos.likes'
+        ])->findOrFail($courseId);
 
-        if (!$this->course) {
-            abort(404, 'Curso no encontrado');
-        }
+        // Actualiza la lista de videos completados por el usuario actual
+        $this->completedVideos = Auth::user()->videos()
+            ->wherePivot('completed', true)
+            ->pluck('videos.id')
+            ->toArray();
     }
 
     public function addComment($videoId)
     {
-        $this->validate([
-            'newComment' => 'required|string|max:500',
-        ]);
+        $this->validate(['newComment' => 'required|string|max:500']);
 
         Comment::create([
             'video_id' => $videoId,
@@ -43,7 +45,42 @@ class CourseDetails extends Component
         ]);
 
         $this->newComment = '';
-        $this->loadCourseData(); // Recargar datos
+        $this->loadCourseData($this->course->id); // Refresca los datos del curso para actualizar comentarios
+    }
+
+    public function toggleLike($videoId)
+    {
+        $like = Like::where('video_id', $videoId)->where('user_id', Auth::id())->first();
+
+        if ($like) {
+            $like->delete();
+        } else {
+            Like::create(['video_id' => $videoId, 'user_id' => Auth::id()]);
+        }
+
+        $this->loadCourseData($this->course->id); // Refresca los datos del curso para actualizar likes
+    }
+
+    public function markVideoAsCompleted($videoId)
+    {
+        Auth::user()->videos()->syncWithoutDetaching([$videoId => ['completed' => true]]);
+        $this->completedVideos[] = $videoId;
+        $this->updateCourseProgress();
+    }
+
+    public function updateCourseProgress()
+    {
+        $totalVideos = $this->course->videos->count();
+        $completedVideos = count($this->completedVideos);
+        $progress = $totalVideos > 0 ? ($completedVideos / $totalVideos) * 100 : 0;
+
+        $inscription = Auth::user()->inscriptions()
+            ->where('course_id', $this->course->id)
+            ->first();
+
+        if ($inscription) {
+            $inscription->update(['progress' => $progress]);
+        }
     }
 
     public function getYouTubeIdFromUrl($url)
@@ -60,45 +97,6 @@ class CourseDetails extends Component
         }
 
         return null;
-    }
-
-    public function toggleLike($videoId)
-    {
-        $like = Like::where('video_id', $videoId)->where('user_id', Auth::id())->first();
-
-        if ($like) {
-            $like->delete();
-        } else {
-            Like::create([
-                'video_id' => $videoId,
-                'user_id' => Auth::id(),
-            ]);
-        }
-
-        $this->loadCourseData(); // Recargar datos
-    }
-
-    public function markVideoAsCompleted($videoId)
-    {
-        Auth::user()->videos()->syncWithoutDetaching([$videoId => ['completed' => true]]);
-        $this->updateCourseProgress();
-        $this->loadCourseData(); // Recargar datos
-    }
-
-    public function updateCourseProgress()
-    {
-        $totalVideos = $this->course->videos->count();
-        $completedVideos = Auth::user()->videos()
-            ->wherePivot('completed', true)
-            ->where('course_id', $this->course->id)
-            ->count();
-
-        $progress = $totalVideos > 0 ? ($completedVideos / $totalVideos) * 100 : 0;
-        $inscription = Auth::user()->inscriptions()->where('course_id', $this->course->id)->first();
-
-        if ($inscription) {
-            $inscription->update(['progress' => $progress]);
-        }
     }
 
     public function render()

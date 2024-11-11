@@ -16,14 +16,18 @@ class CourseIndex extends Component
     public $selectedCategory = '';
     public $selectedAgeGroup = '';
     public $searchTerm = '';
-    public $viewStyle = 'grid'; // grid o list
+
     protected $queryString = [
         'searchTerm' => ['except' => ''],
         'selectedCategory' => ['except' => ''],
         'selectedAgeGroup' => ['except' => ''],
     ];
 
-    protected $listeners = ['refresh' => '$refresh'];
+    #[On('refresh')]
+    public function refresh()
+    {
+        // La función se ejecutará cuando se emita el evento 'refresh'
+    }
 
     public function mount()
     {
@@ -37,33 +41,27 @@ class CourseIndex extends Component
         }
     }
 
-    public function toggleView($style)
-    {
-        $this->viewStyle = $style;
-    }
-
     public function render()
     {
         $query = Course::query()
-            ->with('category') // Eager loading para mejorar la performance
-            ->when($this->selectedCategory, function ($query) {
-                $query->where('category_id', $this->selectedCategory);
-            })
-            ->when($this->selectedAgeGroup, function ($query) {
-                $query->where('age_group', $this->selectedAgeGroup);
-            })
-            ->when($this->searchTerm, function ($query) {
-                $query->where(function ($subquery) {
-                    $subquery->where('title', 'like', '%' . $this->searchTerm . '%')
-                        ->orWhere('description', 'like', '%' . $this->searchTerm . '%');
-                });
-            })
-            ->orderBy('created_at', 'desc');
-
-        $courses = $query->paginate(9);
+    ->select(['id', 'title', 'description', 'category_id', 'age_group', 'image_url']) // Incluye image_url
+    ->with('category:id,name')
+    ->when($this->selectedCategory, function ($query) {
+        $query->where('category_id', $this->selectedCategory);
+    })
+    ->when($this->selectedAgeGroup, function ($query) {
+        $query->where('age_group', $this->selectedAgeGroup);
+    })
+    ->when($this->searchTerm, function ($query) {
+        $query->where(function ($subquery) {
+            $subquery->where('title', 'like', '%' . $this->searchTerm . '%')
+                ->orWhere('description', 'like', '%' . $this->searchTerm . '%');
+        });
+    })
+    ->orderBy('created_at', 'desc');
 
         return view('livewire.course-index', [
-            'courses' => $courses
+            'courses' => $query->paginate(8)
         ]);
     }
 }

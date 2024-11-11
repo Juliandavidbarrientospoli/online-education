@@ -1,7 +1,7 @@
 <div class="container p-4 mx-auto mt-10 bg-white rounded-lg shadow-lg" wire:poll.2s>
     <h1 class="mb-8 text-3xl font-bold text-gray-800">Usuarios Registrados y Progreso en Cursos</h1>
 
-    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+    <div wire:poll.10s class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
         @foreach($users as $user)
             <div class="p-6 border border-yellow-400 rounded-lg shadow-md bg-yellow-50 hover:shadow-lg">
                 <h2 class="text-2xl font-semibold text-yellow-600">{{ $user->name }}</h2>

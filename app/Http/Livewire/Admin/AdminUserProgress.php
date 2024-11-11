@@ -17,7 +17,10 @@ class AdminUserProgress extends Component
 
     public function loadUsers()
     {
-        $this->users = User::with(['inscriptions.course.videos'])->get();
+        // Carga solo los usuarios con el rol 'user'
+        $this->users = User::role('user')
+            ->with(['inscriptions.course.videos'])
+            ->get();
     }
 
     public function updateProgress($inscriptionId)
@@ -30,6 +33,13 @@ class AdminUserProgress extends Component
 
     public function render()
     {
-        return view('livewire.admin.admin-user-progress');
+        $users = User::role('user')
+            ->whereHas('inscriptions')
+            ->with(['inscriptions.course.videos'])
+            ->get();
+
+        return view('livewire.admin.admin-user-progress', [
+            'users' => $users
+        ]);
     }
 }

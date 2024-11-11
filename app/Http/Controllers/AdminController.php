@@ -9,8 +9,8 @@ class AdminController extends Controller
 {
     public function __construct()
     {
-        // Protege este controlador para que solo los administradores puedan acceder
-        $this->middleware('role:admin'); // Middleware para verificar si el usuario tiene el rol de admin
+
+        $this->middleware('role:admin');
     }
 
     public function index()
