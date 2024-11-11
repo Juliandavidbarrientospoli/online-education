@@ -8,6 +8,8 @@ use Livewire\Livewire;
 use App\Http\Livewire\Admin\CourseCreate;
 use App\Http\Livewire\CourseDetails;
 use App\Http\Livewire\Admin\AdminUserProgress;
+use App\Http\Livewire\UserProgress;
+
 
 
 class AppServiceProvider extends ServiceProvider
@@ -28,6 +30,6 @@ class AppServiceProvider extends ServiceProvider
         Livewire::component('course-index', CourseIndex::class);
         Livewire::component('course-details', CourseDetails::class);
         Livewire::component('admin.admin-user-progress', AdminUserProgress::class);
-
+        Livewire::component('users.user-progress', UserProgress::class);
     }
 }

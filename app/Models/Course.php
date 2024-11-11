@@ -17,7 +17,13 @@ class Course extends Model
         'created_by',
     ];
 
-    // Relación con usuarios inscritos
+    /**
+     * Define la relación de muchos a muchos entre el curso y los usuarios inscritos,
+     * utilizando la tabla pivote 'inscriptions'. Incluye campos adicionales en la
+     * tabla pivote, como 'progress' y 'current_video_id'.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function usersEnrolled()
     {
         return $this->belongsToMany(User::class, 'inscriptions')
@@ -25,25 +31,43 @@ class Course extends Model
             ->withTimestamps();
     }
 
-    // Relación con videos
+    /**
+     * Define la relación de uno a muchos con los videos asociados al curso.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function videos()
     {
         return $this->hasMany(Video::class, 'course_id');
     }
 
-    // Relación con categoría
+    /**
+     * Define la relación de uno a uno con la categoría del curso.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
-    // Acceso a comentarios a través de los videos del curso
+    /**
+     * Accede a los comentarios de los videos del curso a través de una relación de "hasManyThrough".
+     * Esto permite obtener todos los comentarios asociados a los videos de un curso.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
     public function comments()
     {
         return $this->hasManyThrough(Comment::class, Video::class, 'course_id', 'video_id');
     }
 
-    // Acceso a likes a través de los videos del curso
+    /**
+     * Accede a los "likes" de los videos del curso a través de una relación de "hasManyThrough".
+     * Esto permite obtener todos los likes asociados a los videos de un curso.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
     public function likes()
     {
         return $this->hasManyThrough(Like::class, Video::class, 'course_id', 'video_id');

@@ -9,7 +9,12 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    // Método para registrar un nuevo usuario
+    /**
+     * Registra un nuevo usuario en la aplicación.
+     *
+     * @param \Illuminate\Http\Request $request La solicitud HTTP con los datos del usuario.
+     * @return \Illuminate\Http\JsonResponse La respuesta JSON con los datos del usuario registrado y el token de autenticación.
+     */
     public function register(Request $request)
     {
         $fields = $request->validate([
@@ -29,7 +34,13 @@ class AuthController extends Controller
         return response()->json(['user' => $user, 'token' => $token]);
     }
 
-    // Método para iniciar sesión
+    /**
+     * Inicia sesión y genera un token de autenticación para el usuario.
+     *
+     * @param \Illuminate\Http\Request $request La solicitud HTTP con las credenciales del usuario.
+     * @return \Illuminate\Http\JsonResponse La respuesta JSON con los datos del usuario autenticado y el token de autenticación.
+     * @throws \Illuminate\Validation\ValidationException Si las credenciales son incorrectas.
+     */
     public function login(Request $request)
     {
         $fields = $request->validate([
@@ -50,7 +61,12 @@ class AuthController extends Controller
         return response()->json(['user' => $user, 'token' => $token]);
     }
 
-    // Método para cerrar sesión
+    /**
+     * Cierra la sesión del usuario autenticado, eliminando sus tokens.
+     *
+     * @param \Illuminate\Http\Request $request La solicitud HTTP del usuario.
+     * @return \Illuminate\Http\JsonResponse La respuesta JSON confirmando la salida del usuario.
+     */
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();

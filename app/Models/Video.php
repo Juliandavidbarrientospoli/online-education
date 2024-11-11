@@ -60,11 +60,18 @@ class Video extends Model
     {
         return $this->hasMany(Like::class);
     }
+
+    /**
+     * Relación muchos a muchos: Un video puede estar asociado a muchos usuarios,
+     * y cada usuario puede tener un estado de 'completed' para un video específico.
+     * Utiliza la tabla pivote 'video_user'.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function users()
     {
-    return $this->belongsToMany(User::class, 'video_user')
-                ->withPivot('completed')
-                ->withTimestamps();
+        return $this->belongsToMany(User::class, 'video_user')
+                    ->withPivot('completed')
+                    ->withTimestamps();
     }
-
 }

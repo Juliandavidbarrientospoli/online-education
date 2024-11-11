@@ -20,22 +20,30 @@ use App\Http\Controllers\AuthController;
 |
 */
 
+// Rutas de autenticación
+Route::post('register', [AuthController::class, 'register']); // Registro de usuario
+Route::post('login', [AuthController::class, 'login']); // Inicio de sesión
 
-
-Route::post('register', [AuthController::class, 'register']);
-Route::post('login', [AuthController::class, 'login']);
-
+// Rutas protegidas por autenticación Sanctum
 Route::middleware('auth:sanctum')->group(function () {
-    
-Route::post('logout', [AuthController::class, 'logout']);
 
-Route::get('/courses', [CourseController::class, 'index']);
-Route::get('/courses/search', [CourseController::class, 'search']);
-Route::post('/courses/{course}/enroll', [InscriptionController::class, 'store']);
-Route::get('/courses/{course}/videos', [VideoController::class, 'index']);
-Route::post('/videos/{video}/comments', [CommentController::class, 'store']);
-Route::post('/videos/{video}/like', [LikeController::class, 'like']);
-Route::post('/videos/{video}/unlike', [LikeController::class, 'unlike']);
-Route::post('/inscriptions/{inscription}/progress', [InscriptionController::class, 'updateProgress']);
+    Route::post('logout', [AuthController::class, 'logout']); // Cerrar sesión
+
+    // Rutas de cursos
+    Route::get('/courses', [CourseController::class, 'index']); // Lista de todos los cursos
+    Route::get('/courses/search', [CourseController::class, 'search']); // Búsqueda de cursos
+    Route::post('/courses/{course}/enroll', [InscriptionController::class, 'store']); // Inscripción a un curso
+
+    // Rutas de videos
+    Route::get('/courses/{course}/videos', [VideoController::class, 'index']); // Lista de videos de un curso
+
+    // Rutas de comentarios
+    Route::post('/videos/{video}/comments', [CommentController::class, 'store']); // Agregar comentario a un video
+
+    // Rutas de likes
+    Route::post('/videos/{video}/like', [LikeController::class, 'like']); // Dar like a un video
+    Route::post('/videos/{video}/unlike', [LikeController::class, 'unlike']); // Quitar like de un video
+
+    // Rutas de progreso en inscripciones
+    Route::post('/inscriptions/{inscription}/progress', [InscriptionController::class, 'updateProgress']); // Actualizar progreso del usuario en un curso
 });
-

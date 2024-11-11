@@ -114,19 +114,19 @@ class DatabaseSeeder extends Seeder
                 ['title' => 'La Célula y sus Funciones', 'url' => 'https://www.youtube.com/watch?v=URUJD5NEXC8']
             ],
             'Física Avanzada' => [
-                ['title' => 'Mecánica Cuántica: Principios Básicos', 'url' => 'https://www.youtube.com/watch?v=ScXf8gk5IM4'],
-                ['title' => 'Relatividad General: Una Introducción', 'url' => 'https://www.youtube.com/watch?v=4yyb_RNJWUM'],
-                ['title' => 'Física de Partículas: El Modelo Estándar', 'url' => 'https://www.youtube.com/watch?v=Rkhb8zN4uYc']
+                ['title' => 'Mecánica Cuántica: Principios Básicos', 'url' => 'https://www.youtube.com/watch?v=Z3hzh4tq_3g&list=PLrnqFStPHdyofwP4mvVK-4YFn-5KfviQZ'],
+                ['title' => 'Relatividad General: Una Introducción', 'url' => 'https://www.youtube.com/watch?v=roP2O_Rx-fw&list=PLrnqFStPHdyofwP4mvVK-4YFn-5KfviQZ&index=2'],
+                ['title' => 'Física de Partículas: El Modelo Estándar', 'url' => 'https://www.youtube.com/watch?v=38vcmbzLSdA&list=PLrnqFStPHdyofwP4mvVK-4YFn-5KfviQZ&index=3']
             ],
             'Introducción a la Informática' => [
-                ['title' => 'Conceptos Básicos de Informática', 'url' => 'https://www.youtube.com/watch?v=info-basics'],
-                ['title' => 'Historia de las Computadoras', 'url' => 'https://www.youtube.com/watch?v=comp-history'],
-                ['title' => 'Fundamentos de Programación', 'url' => 'https://www.youtube.com/watch?v=program-fundamentals']
+                ['title' => 'Conceptos Básicos de Informática', 'url' => 'https://www.youtube.com/watch?v=o_78Ue_EUeI&list=PL2Z95CSZ1N4HLqf215jj9ZJgmWIXm7gOo'],
+                ['title' => 'Historia de las Computadoras', 'url' => 'https://www.youtube.com/watch?v=mTbC3NRz_7Q&list=PL2Z95CSZ1N4HLqf215jj9ZJgmWIXm7gOo&index=2'],
+                ['title' => 'Fundamentos de Programación', 'url' => 'https://www.youtube.com/watch?v=mTbC3NRz_7Q&list=PL2Z95CSZ1N4HLqf215jj9ZJgmWIXm7gOo&index=3']
             ],
             'Historia de la Literatura' => [
-                ['title' => 'Nuevos Autores del Siglo XXI', 'url' => 'https://www.youtube.com/watch?v=xxabcde1234'],
-                ['title' => 'Movimientos Literarios Recientes', 'url' => 'https://www.youtube.com/watch?v=xxxyzxyz5678'],
-                ['title' => 'La Evolución de la Novela Moderna', 'url' => 'https://www.youtube.com/watch?v=xxqrstuv9012']
+                ['title' => 'Nuevos Autores del Siglo XXI', 'url' => 'https://www.youtube.com/watch?v=GyUsD4FyFV4&list=PLKjxTwHgIkVcd9KI1cBwu9n4vVEpEkq5D'],
+                ['title' => 'Movimientos Literarios Recientes', 'url' => 'https://www.youtube.com/watch?v=KVT9zuxshSA&list=PLKjxTwHgIkVcd9KI1cBwu9n4vVEpEkq5D&index=2'],
+                ['title' => 'La Evolución de la Novela Moderna', 'url' => 'https://www.youtube.com/watch?v=dg2XKE5PpgA&list=PLKjxTwHgIkVcd9KI1cBwu9n4vVEpEkq5D&index=3']
             ]
         ];
 

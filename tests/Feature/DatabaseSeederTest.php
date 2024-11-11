@@ -64,8 +64,8 @@ class DatabaseSeederTest extends TestCase
     /** @test */
     public function it_seeds_inscriptions_correctly()
     {
-        // Verifica que haya inscripciones en la base de datos
-        $this->assertDatabaseHas('inscriptions', []); // Confirma que existen inscripciones
+        // Confirma que existen inscripciones
+        $this->assertDatabaseHas('inscriptions', []);
 
         // Verifica que el número de inscripciones coincida con el número esperado
         $expectedCount = User::whereHas('roles', function ($query) {
