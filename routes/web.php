@@ -9,9 +9,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\InscriptionController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\VideoController;
-use App\Http\Controllers\UserController;
+use App\Http\Livewire\Admin\AdminUserProgress;
 
 use App\Http\Livewire\CourseDetails;
+use App\Http\Livewire\UserProgress;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -41,18 +42,20 @@ Route::get('/courses/{courseId}/details', CourseDetails::class)->name('courses.d
 Route::post('/videos', [VideoController::class, 'store'])->name('videos.store');
 Route::post('/admin/videos/create', [VideoController::class, 'store'])->name('videos.store');
 
-
 Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
 Route::get('/admin/courses/create', [CourseController::class, 'create'])->name('courses.create');
 Route::get('/admin/videos/create', [VideoController::class, 'create'])->name('videos.create');
 
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/users/progress', AdminUserProgress::class)->name('admin.users.progress');
+});
 
 Route::get('/admin/panel', [AdminController::class, 'index'])->name('admin.panel');
-
 Route::get('/admin/videos', [VideoController::class, 'index'])->name('videos.index');
-Route::get('/admin/users', [UserController::class, 'index'])->name('users.index');
 
-
+Route::middleware(['auth', 'role:user'])->group(function () {
+    Route::get('/mi-progreso', UserProgress::class)->name('user.progress');
+});
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
@@ -71,6 +74,3 @@ Route::post('/logout', function () {
     Auth::logout();
     return redirect('/login');
 })->name('logout');
-
-// Ruta para mostrar el listado de cursos
-Route::get('/courses', CourseIndex::class)->name('courses.index');

@@ -60,4 +60,11 @@ class Video extends Model
     {
         return $this->hasMany(Like::class);
     }
+    public function users()
+    {
+    return $this->belongsToMany(User::class, 'video_user')
+                ->withPivot('completed')
+                ->withTimestamps();
+    }
+
 }

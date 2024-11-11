@@ -50,4 +50,17 @@ class Inscription extends Model
     {
         return $this->belongsTo(Video::class, 'current_video_id');
     }
+
+    /**
+     * Actualiza el progreso de los usuarios.
+     *
+     *
+     */
+    public function updateProgress()
+    {
+        $totalVideos = $this->course->videos->count();
+        $completedVideos = $this->course->videos()->where('completed', true)->count();
+        $this->progress = $totalVideos > 0 ? ($completedVideos / $totalVideos) * 100 : 0;
+        $this->save();
+}
 }

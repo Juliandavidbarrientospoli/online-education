@@ -9,44 +9,28 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
-     /**
-     * Los atributos que son asignables en masa.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
     ];
 
-    /**
-     * Los atributos que deben ser ocultados para arrays.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Los atributos que deben ser convertidos a tipos nativos.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    
+
     /**
      * Relación uno a muchos: Un usuario (administrador) puede crear muchos cursos.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function coursesCreated()
     {
@@ -54,17 +38,26 @@ class User extends Authenticatable
     }
 
     /**
-     * Relación muchos a muchos: Un usuario puede estar inscrito en muchos cursos.
-     * Gestionado a través de la tabla intermedia 'inscriptions'.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * Relación uno a muchos: Un usuario puede tener muchas inscripciones.
+     */
+    public function inscriptions()
+    {
+        return $this->hasMany(Inscription::class);
+    }
+
+    /**
+     * Relación muchos a muchos a través de Inscription:
+     * Obtener los cursos en los que el usuario está inscrito.
      */
     public function coursesEnrolled()
     {
-        return $this->belongsToMany(Course::class, 'inscriptions')
-                    ->withPivot('progress', 'current_video_id')
-                    ->withTimestamps();
-                    
+        return $this->hasManyThrough(Course::class, Inscription::class, 'user_id', 'id', 'id', 'course_id');
     }
-    
+
+    public function videos()
+    {
+    return $this->belongsToMany(Video::class, 'video_user')
+                ->withPivot('completed')
+                ->withTimestamps();
+    }
 }

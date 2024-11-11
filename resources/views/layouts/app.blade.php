@@ -21,7 +21,7 @@
             <nav class="sticky top-0 z-50 p-5 bg-gray-900 shadow-md">
                 <div class="container flex items-center justify-between mx-auto">
                     <!-- Logo o Nombre -->
-                    <a href="/dashboard" class="text-2xl font-semibold text-white transition duration-300 ease-in-out hover:text-gray-300">Mi Proyecto</a>
+                    <a href="/dashboard" class="text-2xl font-semibold text-white transition duration-300 ease-in-out hover:text-gray-300">Online Education Free</a>
 
                     <!-- Menú de navegación -->
                     <ul class="flex space-x-6 text-lg">
@@ -31,6 +31,10 @@
                         @role('admin') <!-- Verifica si el usuario tiene el rol de admin -->
                             <li><a href="{{ route('admin.panel') }}" class="text-white transition duration-300 hover:text-gray-300">Menú Administrador</a></li>
                         @endrole
+
+                        @unlessrole('admin')
+                            <li><a href="{{ route('user.progress') }}" class="text-white transition duration-300 hover:text-gray-300">Mi Progreso</a></li>
+                        @endunlessrole
 
                         <li>
                             <form method="POST" action="{{ route('logout') }}">

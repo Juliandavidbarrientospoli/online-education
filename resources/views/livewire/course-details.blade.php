@@ -1,34 +1,51 @@
-<div class="container p-4 mx-auto mt-10 bg-white rounded-lg shadow-md">
+<div class="container p-6 mx-auto mt-10 bg-white rounded-lg shadow-md">
     <!-- Información del curso -->
     <h1 class="text-4xl font-bold text-center text-gray-800">{{ $this->course->title }}</h1>
     <p class="mt-2 text-lg text-center text-gray-600">{{ $this->course->description }}</p>
 
     <!-- Lista de videos del curso -->
     @foreach ($this->course->videos as $video)
-        <div class="p-4 mt-6 bg-gray-100 rounded-lg shadow-lg">
+        <div class="relative p-6 mt-6 bg-gray-100 rounded-lg shadow-lg">
             <h2 class="text-2xl font-semibold text-gray-800">{{ $video->title }}</h2>
 
-            <!-- Verifica si la URL es de YouTube y muestra el video correctamente -->
+            <!-- Video embebido o local -->
             @php
-                $youtubeId = $this->getYouTubeIdFromUrl($video->url); // Llamada al método para obtener el ID de YouTube
+                $youtubeId = $this->getYouTubeIdFromUrl($video->url);
             @endphp
 
-            @if ($youtubeId)
-                <!-- Video de YouTube embebido con iframe (ajustado para ser más grande) -->
-                <div class="flex justify-center mt-4">
+            <div class="flex justify-center mt-4">
+                @if ($youtubeId)
                     <iframe width="100%" height="auto" src="https://www.youtube.com/embed/{{ $youtubeId }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full rounded-lg shadow-md lg:w-3/4 h-96"></iframe>
-                </div>
-            @else
-                <!-- Video local o de otro tipo (ajustado para ser más grande) -->
-                <div class="flex justify-center mt-4">
+                @else
                     <video src="{{ asset('storage/' . $video->url) }}" controls class="w-full rounded-lg shadow-md lg:w-3/4 h-96"></video>
+                @endif
+            </div>
+
+            <!-- Botones de "Completado" y "Like" -->
+            <div class="flex items-center justify-between mt-6">
+                @if(!$video->users->contains(Auth::id()))
+                    <button wire:click="markVideoAsCompleted({{ $video->id }})" class="px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700">
+                        Marcar como Completado
+                    </button>
+                @else
+                    <span class="px-4 py-2 text-green-600 bg-green-100 rounded-lg">Completado</span>
+                @endif
+
+                <!-- Botón Like estilo Instagram -->
+                <div class="absolute flex items-center space-x-2 bottom-4 right-4">
+                    <button wire:click="toggleLike({{ $video->id }})" class="focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="{{ $video->likes->contains('user_id', auth()->id()) ? 'red' : 'none' }}" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-red-500">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                        </svg>
+                    </button>
+                    <span class="text-gray-700">{{ $video->likes->count() }} Likes</span>
                 </div>
-            @endif
+            </div>
 
             <!-- Sección de comentarios -->
-            <div class="mt-4">
+            <div class="mt-6">
                 <h3 class="text-lg font-semibold text-gray-700">Comentarios</h3>
-                <div class="space-y-3">
+                <div class="mt-4 space-y-3">
                     @foreach ($video->comments as $comment)
                         <div class="p-3 bg-white rounded-lg shadow-sm">
                             <p class="text-gray-800"><strong>{{ $comment->user->name }}:</strong> {{ $comment->content }}</p>
@@ -37,18 +54,10 @@
                 </div>
 
                 <!-- Formulario para agregar un nuevo comentario -->
-                <form wire:submit.prevent="addComment({{ $video->id }})" class="mt-4">
-                    <textarea wire:model="newComment" class="w-full p-2 border rounded-lg shadow-sm" placeholder="Añadir un comentario..."></textarea>
-                    <button type="submit" class="px-4 py-2 mt-2 text-white transition duration-300 bg-blue-600 rounded-lg hover:bg-blue-700">Comentar</button>
+                <form wire:submit.prevent="addComment({{ $video->id }})" class="flex items-start mt-4">
+                    <textarea wire:model="newComment" class="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="Añadir un comentario..."></textarea>
+                    <button type="submit" class="px-4 py-2 ml-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">Comentar</button>
                 </form>
-            </div>
-
-            <!-- Botón de like -->
-            <div class="mt-4">
-                <button wire:click="toggleLike({{ $video->id }})" class="px-4 py-2 text-white transition duration-300 bg-red-500 rounded-lg hover:bg-red-600">
-                    {{ $video->likes->contains('user_id', auth()->id()) ? 'Quitar Like' : 'Dar Like' }}
-                </button>
-                <span class="ml-2 text-gray-700">{{ $video->likes->count() }} Likes</span>
             </div>
         </div>
     @endforeach

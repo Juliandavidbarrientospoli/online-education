@@ -12,10 +12,21 @@ class CourseDetails extends Component
 {
     public $course;
     public $newComment;
+    public $courseId;
 
     public function mount($courseId)
     {
-        $this->course = Course::with(['videos.comments.user', 'videos.likes'])->findOrFail($courseId);
+        $this->courseId = $courseId;
+        $this->loadCourseData(); // Cargar datos al montar
+    }
+
+    public function loadCourseData()
+    {
+        $this->course = Course::with(['videos.comments.user', 'videos.likes'])->find($this->courseId);
+
+        if (!$this->course) {
+            abort(404, 'Curso no encontrado');
+        }
     }
 
     public function addComment($videoId)
@@ -28,37 +39,28 @@ class CourseDetails extends Component
             'video_id' => $videoId,
             'user_id' => Auth::id(),
             'content' => $this->newComment,
-            'approved' => true, // Cambia esto según tu lógica de aprobación
+            'approved' => true,
         ]);
 
-        $this->newComment = ''; // Limpiar campo de comentario
-        $this->mount($this->course->id); // Recargar comentarios
+        $this->newComment = '';
+        $this->loadCourseData(); // Recargar datos
     }
-
 
     public function getYouTubeIdFromUrl($url)
     {
-        // Verifica si la URL es válida
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            return null; // Si no es una URL válida, devuelve null
+            return null;
         }
 
-        // Extrae los componentes de la URL
         $parsedUrl = parse_url($url);
 
-        // Verifica si la URL proviene de YouTube
         if (isset($parsedUrl['host']) && strpos($parsedUrl['host'], 'youtube.com') !== false) {
-            // Extrae el parámetro 'v' (ID del video) de la URL
             parse_str($parsedUrl['query'], $queryParams);
-
-            // Devuelve el ID del video si existe
-            return isset($queryParams['v']) ? $queryParams['v'] : null;
+            return $queryParams['v'] ?? null;
         }
 
-        // Si no es una URL de YouTube, devuelve null
         return null;
     }
-
 
     public function toggleLike($videoId)
     {
@@ -73,7 +75,30 @@ class CourseDetails extends Component
             ]);
         }
 
-        $this->mount($this->course->id); // Recargar likes
+        $this->loadCourseData(); // Recargar datos
+    }
+
+    public function markVideoAsCompleted($videoId)
+    {
+        Auth::user()->videos()->syncWithoutDetaching([$videoId => ['completed' => true]]);
+        $this->updateCourseProgress();
+        $this->loadCourseData(); // Recargar datos
+    }
+
+    public function updateCourseProgress()
+    {
+        $totalVideos = $this->course->videos->count();
+        $completedVideos = Auth::user()->videos()
+            ->wherePivot('completed', true)
+            ->where('course_id', $this->course->id)
+            ->count();
+
+        $progress = $totalVideos > 0 ? ($completedVideos / $totalVideos) * 100 : 0;
+        $inscription = Auth::user()->inscriptions()->where('course_id', $this->course->id)->first();
+
+        if ($inscription) {
+            $inscription->update(['progress' => $progress]);
+        }
     }
 
     public function render()

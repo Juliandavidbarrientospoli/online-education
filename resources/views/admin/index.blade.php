@@ -21,7 +21,6 @@
             <p class="mb-6 text-gray-700">Agrega nuevos videos a cursos y clasifícalos en categorías adecuadas.</p>
             <div class="flex justify-between">
                 <a href="{{ route('videos.create') }}" class="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">Agregar Video</a>
-                <a href="{{ route('videos.index') }}" class="px-4 py-2 text-green-600 bg-white border border-green-600 rounded hover:bg-green-50">Ver Videos</a>
             </div>
         @if (session('success'))
              <div class="alert alert-success">
@@ -29,6 +28,14 @@
              </div>
          @endif
         </div>
+
+        <div class="p-6 border border-yellow-400 rounded-lg shadow-md bg-yellow-50 hover:shadow-lg">
+            <h2 class="mb-4 text-2xl font-semibold text-yellow-600">Gestionar Usuarios</h2>
+            <p class="mb-6 text-gray-700">Ver los usuarios registrados en los cursos, ver progresos
+                y más</p>
+            <div class="flex justify-between">
+                <a href="{{ route('admin.users.progress') }}" class="px-4 py-2 text-white bg-yellow-600 rounded hover:bg-yellow-700">Ver Usuarios</a>
+            </div>
     </div>
 </div>
 @endsection
